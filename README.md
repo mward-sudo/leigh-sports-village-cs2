@@ -1,0 +1,172 @@
+# Leigh Sports Village — Large Park Asset (CS2)
+
+Custom **Leigh Sports Village stadium** for *Cities: Skylines II* **1.6**, converted from SketchUp (`LSV stadium.skp`).
+
+Import and publish with the **native in-game Asset Importer** (Editor). No Extra Assets Importer / community JSON packs required.
+
+Official overview: [Development Diary: Adding Custom Assets](https://colossalorder.fi/news/development-diary-custom-assets/) · Technical specs: [Asset Creation Guide (wiki)](https://cs2.paradoxwikis.com/Asset_Creation_Guide)
+
+## Game-ready files
+
+| Path | Role |
+|------|------|
+| `art_project/` | **Project Root** for the Asset Importer |
+| `art_project/LeighSportsVillage/LSV_Stadium/` | **Assets Folder** for this stadium |
+| `…/NA_LSV_Stadium_Base.fbx` | Main mesh (meters, origin at ground centre) |
+| `…/NA_LSV_Stadium_Base_BaseColorMap.png` | Base-color texture (1024×1024 PNG) |
+| `…/icon.png` | UI thumbnail |
+
+### Model stats (after mm → m scale)
+
+- **Footprint:** ~119 m × 151 m  
+- **Height:** ~13 m  
+- **Geometry:** 7,502 vertices, 16,645 faces  
+- **Materials in source:** 42 (embedded in FBX; refine in Blender or the Editor)
+
+---
+
+## Import into CS2 1.6 (native Asset Importer)
+
+You need a **Windows** install of Cities: Skylines II **1.6+** with the Editor (Steam / Xbox / Epic). GeForce NOW on Mac cannot run the Editor; copy this repo to a Windows PC (or AirGPU Windows session) first.
+
+### 1. Put the files on the Windows machine
+
+Copy the whole `art_project` folder somewhere easy to browse, for example:
+
+```text
+C:\CS2_Assets\art_project\
+```
+
+Keep this structure intact:
+
+```text
+art_project/
+└── LeighSportsVillage/
+    └── LSV_Stadium/
+        ├── NA_LSV_Stadium_Base.fbx
+        ├── NA_LSV_Stadium_Base_BaseColorMap.png
+        └── icon.png
+```
+
+### 2. Open the Editor
+
+1. Launch **Cities: Skylines II** (fully updated to **1.6**).
+2. From the **Main Menu**, open the **Editor** (same Editor as maps — there is no separate asset Editor).
+3. Optional: load a map with roads for scale reference, or use the default green terrain.
+
+### 3. Import with Asset Importer
+
+1. Click **Asset Importer** (toolbar; panel opens on the right).
+2. Set:
+   - **Project Root** → the `art_project` folder  
+     Example: `C:\CS2_Assets\art_project`
+   - **Assets Folder** → `LeighSportsVillage\LSV_Stadium`  
+     Example: `C:\CS2_Assets\art_project\LeighSportsVillage\LSV_Stadium`
+3. Confirm the importer lists at least:
+   - `NA_LSV_Stadium_Base.fbx`
+   - `NA_LSV_Stadium_Base_BaseColorMap.png`
+   - `icon.png`
+4. Choose a **Prefab Preset**:
+   - **Static Object** — large decorative prop (best first test)
+   - **Building** — lot-based park / signature building (configure lot after import)
+   - **Existing Prefab in Project** — copy components from a similar in-game stadium/park building
+5. Click **Import** and wait until processing finishes.
+6. **Place** the new asset in the scene so you can edit it.
+
+### 4. Configure the asset
+
+Select the placed asset. Use the **Object Info Panel** (right) to set:
+
+- Display name: `Leigh Sports Village Stadium`
+- Cost, category (e.g. Parks / Recreation), consumptions, capacity as needed
+- If **Building**: lot width ≈ **120**, depth ≈ **150** (max lot is 1000×1000 in 1.5.2+ / 1.6)
+- Paths / pathfinding areas / pedestrian access if citizens should enter the grounds
+- Props and surfaces via **Asset Browser** (enable *Binds overlapping items to a building* when decorating)
+
+### 5. Save locally
+
+In the **Workspace** panel (left):
+
+1. Find your asset in the list.
+2. Click **Save** to write a local prefab.
+
+Saved files typically land here on Windows:
+
+```text
+%USERPROFILE%\AppData\LocalLow\Colossal Order\Cities Skylines II\StreamingAssets~
+```
+
+(You may also see related data under `StreamingData~` depending on session.)
+
+### 6. Package and publish to Paradox Mods
+
+Still in **Workspace** (1.6 / Asset Mods Editor flow):
+
+1. **Package** — packs selected items into a `.cok` (virtual texturing / packaging).
+2. **Share** — open the share UI, add description + screenshots.
+3. **Submit** — upload to **Paradox Mods** (PDX account required).
+
+You can re-open packaged assets from Workspace in later Editor sessions.
+
+---
+
+## Prerequisites (this Mac — conversion only)
+
+| Tool | Use |
+|------|-----|
+| Blender 5.2 | `/Applications/Blender.app` — FBX export |
+| ImageMagick | Texture resize |
+| Python 3 + `openskp` / `scipy` | SketchUp parse (`pip install openskp scipy`) |
+
+CS2 itself is not required on the Mac. Final import/publish is **in-game on Windows**.
+
+---
+
+## Manual polish (optional)
+
+1. **Materials** — FBX uses a single `Base` material; SketchUp had 42. Re-export with CS2 slots (`Base`, `Gls`, `Win`, …) via [CS2 Exporter for Blender](https://github.com/DanOkami/CS2-Exporter-for-Blender), or bake atlas + `_NormalMap.png` / `_MaskMap.png`.
+2. **Asset type** — prop vs park building vs signature stadium; tune lot, park area, entertainment in the Editor.
+3. **LODs** — optional `_LOD1` / `_LOD2` FBX meshes for city-scale performance.
+
+---
+
+## Re-convert from the original SKP
+
+```bash
+"./scripts/convert_skp_to_fbx.sh"
+# or pass a path:
+"./scripts/convert_skp_to_fbx.sh" "/path/to/LSV stadium.skp"
+```
+
+Requires: `pip install openskp scipy`, Blender at `/Applications/Blender.app`, and ImageMagick (`magick`).
+
+Default SKP path in the script: `~/Downloads/LSV stadium.skp`.
+
+### Source / intermediates in this repo
+
+| Path | Description |
+|------|-------------|
+| `source/LSV_stadium.glb` | Intermediate GLB from SketchUp |
+| `source/LSV_stadium.blend` | Blender scene (scaled, joined) |
+| `source/LSV_stadium_metadata.json` | Parsed SKP metadata |
+| `scripts/convert_skp_to_fbx.sh` | Conversion script |
+
+Original SketchUp file is **not** in the repo (user Downloads). Parsed with [OpenSKP](https://github.com/iamahsanmehmood/openskp).
+
+---
+
+## Troubleshooting
+
+| Issue | Fix |
+|-------|-----|
+| Model tiny/huge | CS2 is **1 unit = 1 m**. This export uses **0.001** scale (mm → m). |
+| Pink / missing textures | Keep `NA_LSV_Stadium_Base_BaseColorMap.png` in the Assets Folder; square PNG 512–4096 px. |
+| Import list empty | Project Root must be `art_project`, **not** only `LSV_Stadium`. |
+| Asset missing from build menu | Save in Workspace; set UI category / unlock as needed. |
+| Cannot open Editor (Mac / GFN) | Use a Windows PC or cloud Windows (e.g. AirGPU); GFN Mac does not provide the Editor. |
+
+---
+
+## License
+
+Model source is user-provided. Check SketchUp / texture licenses before publishing to Paradox Mods.

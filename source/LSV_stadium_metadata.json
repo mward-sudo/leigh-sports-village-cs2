@@ -1,0 +1,546 @@
+{
+  "format_version": "1.0",
+  "source_file": "LSV_stadium",
+  "model_source": "sketchup",
+  "sketchup_version": "{21.0.0}",
+  "total_definitions": 3,
+  "total_meshes": 4,
+  "total_layers": 1,
+  "layers": [
+    {
+      "name": "Layer0",
+      "color": {
+        "r": 255,
+        "g": 84,
+        "b": 84
+      }
+    }
+  ],
+  "materials": [
+    {
+      "name": "black",
+      "color": {
+        "r": 0,
+        "g": 0,
+        "b": 0
+      },
+      "transparency": 0.5
+    },
+    {
+      "name": "<Beige>1",
+      "color": {
+        "r": 211,
+        "g": 189,
+        "b": 144
+      },
+      "transparency": 0.5
+    },
+    {
+      "name": "[Color_B24]",
+      "color": {
+        "r": 51,
+        "g": 35,
+        "b": 30
+      },
+      "transparency": 1.0
+    },
+    {
+      "name": "<LightGray>",
+      "color": {
+        "r": 169,
+        "g": 169,
+        "b": 169
+      },
+      "transparency": 0.5
+    },
+    {
+      "name": "[0135_DarkGray]",
+      "color": {
+        "r": 81,
+        "g": 81,
+        "b": 81
+      },
+      "transparency": 0.5
+    },
+    {
+      "name": "96,96,96",
+      "color": {
+        "r": 96,
+        "g": 96,
+        "b": 96
+      },
+      "transparency": 0.5
+    },
+    {
+      "name": "jean blue",
+      "color": {
+        "r": 36,
+        "g": 47,
+        "b": 66
+      },
+      "transparency": 0.5
+    },
+    {
+      "name": "<Charcoal>",
+      "color": {
+        "r": 35,
+        "g": 35,
+        "b": 35
+      },
+      "transparency": 0.5
+    },
+    {
+      "name": "[Concrete_Aggregate_Smoke]",
+      "color": {
+        "r": 154,
+        "g": 150,
+        "b": 148
+      },
+      "transparency": 0.0
+    },
+    {
+      "name": "*1",
+      "color": {
+        "r": 123,
+        "g": 156,
+        "b": 81
+      },
+      "transparency": 0.5
+    },
+    {
+      "name": "[Fencing_Railing_Metal2]",
+      "color": {
+        "r": 216,
+        "g": 207,
+        "b": 208
+      },
+      "transparency": 0.0
+    },
+    {
+      "name": "[Vegetation_Grass1]",
+      "color": {
+        "r": 102,
+        "g": 140,
+        "b": 50
+      },
+      "transparency": 0.0
+    },
+    {
+      "name": "[Fencing_Chain_Link]1",
+      "color": {
+        "r": 247,
+        "g": 247,
+        "b": 247
+      },
+      "transparency": 0.0
+    },
+    {
+      "name": "[Color_000]",
+      "color": {
+        "r": 255,
+        "g": 255,
+        "b": 255
+      },
+      "transparency": 1.0
+    },
+    {
+      "name": "[Concrete_Aggregate_Smoke]1",
+      "color": {
+        "r": 154,
+        "g": 150,
+        "b": 148
+      },
+      "transparency": 0.0
+    },
+    {
+      "name": "light vert",
+      "color": {
+        "r": 191,
+        "g": 191,
+        "b": 191
+      },
+      "transparency": 0.5
+    },
+    {
+      "name": "exits",
+      "color": {
+        "r": 199,
+        "g": 194,
+        "b": 188
+      },
+      "transparency": 0.5
+    },
+    {
+      "name": "[Color_008]",
+      "color": {
+        "r": 30,
+        "g": 30,
+        "b": 30
+      },
+      "transparency": 1.0
+    },
+    {
+      "name": "roof",
+      "color": {
+        "r": 229,
+        "g": 229,
+        "b": 229
+      },
+      "transparency": 0.5
+    },
+    {
+      "name": "exit top",
+      "color": {
+        "r": 213,
+        "g": 207,
+        "b": 199
+      },
+      "transparency": 0.5
+    },
+    {
+      "name": "*71",
+      "color": {
+        "r": 250,
+        "g": 0,
+        "b": 18
+      },
+      "transparency": 0.0
+    },
+    {
+      "name": "*9",
+      "color": {
+        "r": 150,
+        "g": 148,
+        "b": 137
+      },
+      "transparency": 0.5
+    },
+    {
+      "name": "*2",
+      "color": {
+        "r": 255,
+        "g": 255,
+        "b": 255
+      },
+      "transparency": 0.0
+    },
+    {
+      "name": "[Cladding_Stucco_White]",
+      "color": {
+        "r": 200,
+        "g": 200,
+        "b": 200
+      },
+      "transparency": 0.0
+    },
+    {
+      "name": "*3",
+      "color": {
+        "r": 226,
+        "g": 226,
+        "b": 225
+      },
+      "transparency": 0.0
+    },
+    {
+      "name": "*11",
+      "color": {
+        "r": 182,
+        "g": 126,
+        "b": 77
+      },
+      "transparency": 1.0
+    },
+    {
+      "name": "*15",
+      "color": {
+        "r": 226,
+        "g": 226,
+        "b": 226
+      },
+      "transparency": 1.0
+    },
+    {
+      "name": "[Metal_Seamed]",
+      "color": {
+        "r": 161,
+        "g": 162,
+        "b": 159
+      },
+      "transparency": 0.0
+    },
+    {
+      "name": "[Metal_Steel_Textured_White]",
+      "color": {
+        "r": 191,
+        "g": 191,
+        "b": 191
+      },
+      "transparency": 0.0
+    },
+    {
+      "name": "*8",
+      "color": {
+        "r": 0,
+        "g": 0,
+        "b": 0
+      },
+      "transparency": 0.0
+    },
+    {
+      "name": "[Metal_Rough]1",
+      "color": {
+        "r": 153,
+        "g": 157,
+        "b": 160
+      },
+      "transparency": 0.0
+    },
+    {
+      "name": "[Metal_Rough]2",
+      "color": {
+        "r": 153,
+        "g": 157,
+        "b": 160
+      },
+      "transparency": 0.0
+    },
+    {
+      "name": "*4",
+      "color": {
+        "r": 158,
+        "g": 158,
+        "b": 158
+      },
+      "transparency": 0.0
+    },
+    {
+      "name": "[Metal_Panel]",
+      "color": {
+        "r": 143,
+        "g": 157,
+        "b": 158
+      },
+      "transparency": 0.0
+    },
+    {
+      "name": "[Carpet_Plush_Charcoal]",
+      "color": {
+        "r": 87,
+        "g": 87,
+        "b": 87
+      },
+      "transparency": 0.0
+    },
+    {
+      "name": "[Carpet_Plush_Charcoal]1",
+      "color": {
+        "r": 87,
+        "g": 87,
+        "b": 87
+      },
+      "transparency": 0.0
+    },
+    {
+      "name": "*5",
+      "color": {
+        "r": 198,
+        "g": 198,
+        "b": 198
+      },
+      "transparency": 0.5
+    },
+    {
+      "name": "[Concrete_Aggregate_Smoke]2",
+      "color": {
+        "r": 154,
+        "g": 150,
+        "b": 148
+      },
+      "transparency": 0.0
+    },
+    {
+      "name": "*117",
+      "color": {
+        "r": 86,
+        "g": 93,
+        "b": 95
+      },
+      "transparency": 0.5
+    },
+    {
+      "name": "*6",
+      "color": {
+        "r": 210,
+        "g": 204,
+        "b": 176
+      },
+      "transparency": 0.0
+    },
+    {
+      "name": "[Concrete_Aggregate_Smoke]3",
+      "color": {
+        "r": 154,
+        "g": 150,
+        "b": 148
+      },
+      "transparency": 0.0
+    },
+    {
+      "name": "Layer_Layer0",
+      "color": {
+        "r": 255,
+        "g": 84,
+        "b": 84
+      },
+      "transparency": 0.0
+    }
+  ],
+  "mesh_index": {
+    "mesh_1_ROOT__Component_64_Layer0": {
+      "name": "",
+      "definition_name": "Susan",
+      "layer": "Layer0",
+      "position_mm": [
+        467.94,
+        366.23,
+        -0.0
+      ],
+      "properties": {
+        "color": "96,96,96",
+        "material": "96,96,96"
+      },
+      "path": "ROOT / Component_64"
+    },
+    "mesh_2_ROOT__Component_1064_Layer0": {
+      "name": "",
+      "definition_name": "Group#1",
+      "layer": "Layer0",
+      "position_mm": [
+        33007.91,
+        113697.72,
+        0.0
+      ],
+      "properties": {},
+      "path": "ROOT / Component_1064"
+    },
+    "mesh_3_ROOT__Component_4530_Layer0": {
+      "name": "",
+      "definition_name": "Group#21",
+      "layer": "Layer0",
+      "position_mm": [
+        42238.77,
+        859.1,
+        30.03
+      ],
+      "properties": {},
+      "path": "ROOT / Component_4530"
+    },
+    "mesh_0_ROOT_Layer0": {
+      "name": "ROOT",
+      "definition_name": "ROOT_MODEL",
+      "layer": "Layer0",
+      "position_mm": [
+        0,
+        0,
+        0
+      ],
+      "properties": {},
+      "path": "ROOT"
+    }
+  },
+  "scene_hierarchy": {
+    "name": "ROOT",
+    "layer": "Layer0",
+    "properties": {},
+    "children": [
+      {
+        "name": "",
+        "definition_id": 64,
+        "definition_name": "Susan",
+        "layer": "Layer0",
+        "position_mm": [
+          467.94,
+          366.23,
+          -0.0
+        ],
+        "matrix_3x4": [
+          0.9280632059637584,
+          -0.3724227245164702,
+          0.0,
+          0.3724227245164702,
+          0.9280632059637584,
+          0.0,
+          -0.0,
+          0.0,
+          1.0,
+          18.422672481011432,
+          14.418601067179424,
+          -1.4210854715202004e-14,
+          1.0
+        ],
+        "properties": {
+          "color": "96,96,96",
+          "material": "96,96,96"
+        },
+        "children": []
+      },
+      {
+        "name": "",
+        "definition_id": 1064,
+        "definition_name": "Group#1",
+        "layer": "Layer0",
+        "position_mm": [
+          33007.91,
+          113697.72,
+          0.0
+        ],
+        "matrix_3x4": [
+          0.9999999999999999,
+          2.107304282461531e-08,
+          0.0,
+          2.107304282461531e-08,
+          -0.9999999999999999,
+          0.0,
+          -0.0,
+          0.0,
+          1.0,
+          1299.5239445520133,
+          4476.288124035391,
+          0.0,
+          1.0
+        ],
+        "properties": {},
+        "children": []
+      },
+      {
+        "name": "",
+        "definition_id": 4530,
+        "definition_name": "Group#21",
+        "layer": "Layer0",
+        "position_mm": [
+          42238.77,
+          859.1,
+          30.03
+        ],
+        "matrix_3x4": [
+          -1.0,
+          -6.171898041251732e-09,
+          0.0,
+          -6.171898041251732e-09,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          1662.9435674168872,
+          33.822704013136104,
+          1.1823144538921397,
+          1.0
+        ],
+        "properties": {},
+        "children": []
+      }
+    ]
+  }
+}
