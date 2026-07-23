@@ -18,11 +18,13 @@ Official overview: [Development Diary: Adding Custom Assets](https://colossalord
 
 **Naming rule:** Asset names must be a single token with **no underscores**. Pattern: `{Theme}_{AssetName}_{Module}` / `{Theme}_{AssetName}_{Module}_BaseColorMap.png` (e.g. `NA` + `LSVStadium` + `Base`).
 
-### Model stats (after mm → m scale)
+### Model stats (CS2-ready export)
 
+- **Source:** SketchUp 3D Warehouse [Leigh Sports Village Stadium](https://3dwarehouse.sketchup.com/model/a7d7c98e6df34ce6a7174eba4ed97c53/Leigh-Sports-Village-Stadium) (`LSV stadium.skp`)
 - **Footprint:** ~119 m × 151 m  
 - **Height:** ~13 m  
 - **Geometry:** 7,502 vertices, 16,645 faces  
+- **Export bake:** −90° X + ×100 (same as [CS2 Exporter for Blender](https://github.com/DanOkami/CS2-Exporter-for-Blender)) so Unity/CS2 File Scale lands at 1 m = 1 m  
 - **Materials in source:** 42 (embedded in FBX; refine in Blender or the Editor)
 
 ---
@@ -151,7 +153,8 @@ Default SKP path in the script: `~/Downloads/LSV stadium.skp`.
 | `source/LSV_stadium.glb` | Intermediate GLB from SketchUp |
 | `source/LSV_stadium.blend` | Blender scene (scaled, joined) |
 | `source/LSV_stadium_metadata.json` | Parsed SKP metadata |
-| `scripts/convert_skp_to_fbx.sh` | Conversion script |
+| `scripts/convert_skp_to_fbx.sh` | Conversion driver (SKP → GLB → FBX) |
+| `scripts/blender_export_fbx.py` | Blender mm→m + CS2 −90°/×100 FBX bake |
 
 Original SketchUp file is **not** in the repo (user Downloads). Parsed with [OpenSKP](https://github.com/iamahsanmehmood/openskp).
 
@@ -161,7 +164,7 @@ Original SketchUp file is **not** in the repo (user Downloads). Parsed with [Ope
 
 | Issue | Fix |
 |-------|-----|
-| Model tiny/huge | CS2 is **1 unit = 1 m**. This export uses **0.001** scale (mm → m). |
+| Model tiny / edge-on speck | Re-copy the latest `NA_LSVStadium_Base.fbx`. Export must bake **×100** and **−90° X** (CS2/Unity FBX). Plain mm→m without that bake imports at ~1 m and tipped. |
 | Pink / missing textures | Keep `NA_LSVStadium_Base_BaseColorMap.png` in the Assets Folder; square PNG 512–4096 px. |
 | Import list empty | Project Root must be `art_project`, **not** only `LSV_Stadium`. |
 | `FormatException` / ParseName fails | AssetName must not contain `_`. Use `LSVStadium`, not `LSV_Stadium`, in mesh/texture filenames. |
