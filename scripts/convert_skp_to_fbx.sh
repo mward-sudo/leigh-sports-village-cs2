@@ -29,6 +29,6 @@ PY
 
 magick "$ROOT/.tmp/skp_extract/materials/_1/pitch4.JPG" \
   -resize 1024x1024^ -gravity center -extent 1024x1024 \
-  "$ROOT/art_project/LeighSportsVillage/LSV_Stadium/NA_LSV_Stadium_Base_BaseColorMap.png" 2>/dev/null || true
+  "$ROOT/art_project/LeighSportsVillage/LSV_Stadium/NA_LSVStadium_Base_BaseColorMap.png" 2>/dev/null || true
 
 echo "Done. Import folder: $ROOT/art_project/LeighSportsVillage/LSV_Stadium"

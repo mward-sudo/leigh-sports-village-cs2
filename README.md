@@ -11,10 +11,12 @@ Official overview: [Development Diary: Adding Custom Assets](https://colossalord
 | Path | Role |
 |------|------|
 | `art_project/` | **Project Root** for the Asset Importer |
-| `art_project/LeighSportsVillage/LSV_Stadium/` | **Assets Folder** for this stadium |
-| `…/NA_LSV_Stadium_Base.fbx` | Main mesh (meters, origin at ground centre) |
-| `…/NA_LSV_Stadium_Base_BaseColorMap.png` | Base-color texture (1024×1024 PNG) |
+| `art_project/LeighSportsVillage/LSV_Stadium/` | **Assets Folder** for this stadium (folder underscores OK) |
+| `…/NA_LSVStadium_Base.fbx` | Main mesh (meters, origin at ground centre) |
+| `…/NA_LSVStadium_Base_BaseColorMap.png` | Base-color texture (1024×1024 PNG) |
 | `…/icon.png` | UI thumbnail |
+
+**Naming rule:** Asset names must be a single token with **no underscores**. Pattern: `{Theme}_{AssetName}_{Module}` / `{Theme}_{AssetName}_{Module}_BaseColorMap.png` (e.g. `NA` + `LSVStadium` + `Base`).
 
 ### Model stats (after mm → m scale)
 
@@ -43,8 +45,8 @@ Keep this structure intact:
 art_project/
 └── LeighSportsVillage/
     └── LSV_Stadium/
-        ├── NA_LSV_Stadium_Base.fbx
-        ├── NA_LSV_Stadium_Base_BaseColorMap.png
+        ├── NA_LSVStadium_Base.fbx
+        ├── NA_LSVStadium_Base_BaseColorMap.png
         └── icon.png
 ```
 
@@ -63,8 +65,8 @@ art_project/
    - **Assets Folder** → `LeighSportsVillage\LSV_Stadium`  
      Example: `C:\CS2_Assets\art_project\LeighSportsVillage\LSV_Stadium`
 3. Confirm the importer lists at least:
-   - `NA_LSV_Stadium_Base.fbx`
-   - `NA_LSV_Stadium_Base_BaseColorMap.png`
+   - `NA_LSVStadium_Base.fbx`
+   - `NA_LSVStadium_Base_BaseColorMap.png`
    - `icon.png`
 4. Choose a **Prefab Preset**:
    - **Static Object** — large decorative prop (best first test)
@@ -160,8 +162,9 @@ Original SketchUp file is **not** in the repo (user Downloads). Parsed with [Ope
 | Issue | Fix |
 |-------|-----|
 | Model tiny/huge | CS2 is **1 unit = 1 m**. This export uses **0.001** scale (mm → m). |
-| Pink / missing textures | Keep `NA_LSV_Stadium_Base_BaseColorMap.png` in the Assets Folder; square PNG 512–4096 px. |
+| Pink / missing textures | Keep `NA_LSVStadium_Base_BaseColorMap.png` in the Assets Folder; square PNG 512–4096 px. |
 | Import list empty | Project Root must be `art_project`, **not** only `LSV_Stadium`. |
+| `FormatException` / ParseName fails | AssetName must not contain `_`. Use `LSVStadium`, not `LSV_Stadium`, in mesh/texture filenames. |
 | Asset missing from build menu | Save in Workspace; set UI category / unlock as needed. |
 | Cannot open Editor (Mac / GFN) | Use a Windows PC or cloud Windows (e.g. AirGPU); GFN Mac does not provide the Editor. |
 
