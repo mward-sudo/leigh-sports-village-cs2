@@ -1,4 +1,9 @@
-"""Convert LSV stadium GLB → CS2-ready FBX.
+"""Convert textured LSV stadium GLB → CS2-ready FBX.
+
+Pipeline assumptions:
+  - Input GLB is already metres-or-mm from OpenSKP, with atlas UVs + BaseColor
+  - Prefer source/LSV_stadium_textured.glb (from bake_sketchup_atlas.py)
+  - Fall back to source/LSV_stadium.glb
 
 Matches DanOkami CS2-Exporter-for-Blender prep:
   1. Author in meters (1 BU = 1 m) from OpenSKP mm GLB
@@ -15,12 +20,19 @@ import os
 from mathutils import Matrix
 
 ROOT = "/Users/michael/Developer/cities skylines 2 mods/Leigh Sports Village Large Park Asset"
-GLB_PATH = os.path.join(ROOT, "source/LSV_stadium.glb")
+GLB_TEXTURED = os.path.join(ROOT, "source/LSV_stadium_textured.glb")
+GLB_PLAIN = os.path.join(ROOT, "source/LSV_stadium.glb")
 OUT_DIR = os.path.join(ROOT, "art_project/LeighSportsVillage/LSV_Stadium")
 BLEND_PATH = os.path.join(ROOT, "source/LSV_stadium.blend")
 FBX_PATH = os.path.join(OUT_DIR, "NA_LSVStadium_Base.fbx")
+BASECOLOR = os.path.join(OUT_DIR, "NA_LSVStadium_Base_BaseColorMap.png")
+NORMALMAP = os.path.join(OUT_DIR, "NA_LSVStadium_Base_NormalMap.png")
+MASKMAP = os.path.join(OUT_DIR, "NA_LSVStadium_Base_MaskMap.png")
 
 os.makedirs(OUT_DIR, exist_ok=True)
+
+GLB_PATH = GLB_TEXTURED if os.path.isfile(GLB_TEXTURED) else GLB_PLAIN
+print(f"Importing GLB: {GLB_PATH}")
 
 bpy.ops.wm.read_factory_settings(use_empty=True)
 bpy.context.scene.unit_settings.system = "METRIC"
@@ -51,7 +63,7 @@ bpy.ops.object.select_all(action="DESELECT")
 obj.select_set(True)
 bpy.context.view_layer.objects.active = obj
 
-# OpenSKP GLB is millimeters → meters
+# OpenSKP / bake GLB is millimeters → meters
 obj.scale = (0.001, 0.001, 0.001)
 bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
 
@@ -71,26 +83,58 @@ def size_from_aabb(aabb):
     return tuple(round(hi - lo, 3) for lo, hi in aabb)
 
 
-# Ground-centred origin (Z-up authoring space)
+# Blender glTF import converts glTF Y-up → Blender Z-up. Ground = min_z.
 aabb = vertex_aabb(obj)
 min_x, max_x = aabb[0]
 min_y, max_y = aabb[1]
 min_z, max_z = aabb[2]
 cx = (min_x + max_x) / 2.0
 cy = (min_y + max_y) / 2.0
-# shift so ground (min_z) is at z=0 and XY centred
 obj.data.transform(Matrix.Translation((-cx, -cy, -min_z)))
 obj.data.update()
 
 meter_size = size_from_aabb(vertex_aabb(obj))
 print(f"Authoring size (m): X={meter_size[0]}, Y={meter_size[1]}, Z={meter_size[2]}")
 print(f"Verts={len(obj.data.vertices)}, Faces={len(obj.data.polygons)}")
+print(f"UV layers={[uv.name for uv in obj.data.uv_layers]}")
 
-if not obj.data.materials:
-    mat = bpy.data.materials.new(name="Base")
-    obj.data.materials.append(mat)
-elif obj.data.materials[0]:
-    obj.data.materials[0].name = "Base"
+# Ensure single CS2 material named Base, wired to BaseColorMap on disk
+def ensure_base_material(mesh_obj):
+    # Remove extra slots; keep one
+    while len(mesh_obj.data.materials) > 1:
+        mesh_obj.data.materials.pop(index=len(mesh_obj.data.materials) - 1)
+
+    mat = mesh_obj.data.materials[0] if mesh_obj.data.materials else None
+    if mat is None:
+        mat = bpy.data.materials.new(name="Base")
+        mesh_obj.data.materials.append(mat)
+    mat.name = "Base"
+    mat.use_nodes = True
+    nt = mat.node_tree
+    nodes = nt.nodes
+    links = nt.links
+    nodes.clear()
+
+    out = nodes.new("ShaderNodeOutputMaterial")
+    out.location = (400, 0)
+    bsdf = nodes.new("ShaderNodeBsdfPrincipled")
+    bsdf.location = (100, 0)
+    links.new(bsdf.outputs["BSDF"], out.inputs["Surface"])
+
+    if os.path.isfile(BASECOLOR):
+        tex = nodes.new("ShaderNodeTexImage")
+        tex.location = (-300, 0)
+        img = bpy.data.images.load(BASECOLOR, check_existing=True)
+        tex.image = img
+        links.new(tex.outputs["Color"], bsdf.inputs["Base Color"])
+        print(f"Bound BaseColorMap: {BASECOLOR}")
+    else:
+        print("WARN: BaseColorMap missing; material has no texture")
+
+    return mat
+
+
+ensure_base_material(obj)
 
 obj.name = "NA_LSVStadium_Base"
 obj.data.name = "NA_LSVStadium_Base"
@@ -98,14 +142,13 @@ obj.location = (0.0, 0.0, 0.0)
 obj.rotation_euler = (0.0, 0.0, 0.0)
 obj.scale = (1.0, 1.0, 1.0)
 
-# Editable meters-space .blend (Z-up, before CS2 bake)
+# Editable metres-space .blend (before CS2 bake)
 bpy.ops.wm.save_as_mainfile(filepath=BLEND_PATH)
 
 # --- CS2 bake (matches CS2-Exporter-for-Blender) ---
-# -90° X: height Z → Y
+# −90° X: height Z → Y; ×100: metres → centimetre numbers for Unity/CS2 File Scale
 obj.data.transform(Matrix.Rotation(math.radians(-90.0), 4, "X"))
 obj.data.update()
-# ×100: meters → centimetre numbers for Unity/CS2 File Scale
 obj.data.transform(Matrix.Scale(100.0, 4))
 obj.data.update()
 
@@ -147,4 +190,23 @@ bpy.ops.export_scene.fbx(
 )
 
 print(f"Exported FBX: {os.path.getsize(FBX_PATH)} bytes → {FBX_PATH}")
+
+# Ensure Normal/Mask exist as flat defaults if bake step did not create them
+try:
+    from PIL import Image
+except ImportError:
+    Image = None
+
+if Image is not None:
+    size = 2048
+    if os.path.isfile(BASECOLOR):
+        with Image.open(BASECOLOR) as im:
+            size = im.size[0]
+    if not os.path.isfile(NORMALMAP):
+        Image.new("RGBA", (size, size), (128, 128, 255, 255)).save(NORMALMAP)
+        print(f"Wrote default NormalMap {NORMALMAP}")
+    if not os.path.isfile(MASKMAP):
+        Image.new("RGBA", (size, size), (0, 0, 0, 80)).save(MASKMAP)
+        print(f"Wrote default MaskMap {MASKMAP}")
+
 print("Done")

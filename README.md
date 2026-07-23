@@ -12,8 +12,10 @@ Official overview: [Development Diary: Adding Custom Assets](https://colossalord
 |------|------|
 | `art_project/` | **Project Root** for the Asset Importer |
 | `art_project/LeighSportsVillage/LSV_Stadium/` | **Assets Folder** for this stadium (folder underscores OK) |
-| `…/NA_LSVStadium_Base.fbx` | Main mesh (meters, origin at ground centre) |
-| `…/NA_LSVStadium_Base_BaseColorMap.png` | Base-color texture (1024×1024 PNG) |
+| `…/NA_LSVStadium_Base.fbx` | Main mesh (CS2-baked −90°X + ×100; origin at ground centre) |
+| `…/NA_LSVStadium_Base_BaseColorMap.png` | 2048×2048 atlas (SketchUp colours + key textures) |
+| `…/NA_LSVStadium_Base_NormalMap.png` | Flat OpenGL normal (optional but included) |
+| `…/NA_LSVStadium_Base_MaskMap.png` | Default MaskMap (low metal / moderate gloss) |
 | `…/icon.png` | UI thumbnail |
 
 **Naming rule:** Asset names must be a single token with **no underscores**. Pattern: `{Theme}_{AssetName}_{Module}` / `{Theme}_{AssetName}_{Module}_BaseColorMap.png` (e.g. `NA` + `LSVStadium` + `Base`).
@@ -23,9 +25,9 @@ Official overview: [Development Diary: Adding Custom Assets](https://colossalord
 - **Source:** SketchUp 3D Warehouse [Leigh Sports Village Stadium](https://3dwarehouse.sketchup.com/model/a7d7c98e6df34ce6a7174eba4ed97c53/Leigh-Sports-Village-Stadium) (`LSV stadium.skp`)
 - **Footprint:** ~119 m × 151 m  
 - **Height:** ~13 m  
-- **Geometry:** 7,502 vertices, 16,645 faces  
+- **Geometry:** ~49.9k vertices (exploded for atlas UVs), 16,647 faces  
 - **Export bake:** −90° X + ×100 (same as [CS2 Exporter for Blender](https://github.com/DanOkami/CS2-Exporter-for-Blender)) so Unity/CS2 File Scale lands at 1 m = 1 m  
-- **Materials in source:** 42 (embedded in FBX; refine in Blender or the Editor)
+- **Textures:** Single `Base` material with a 2048 atlas baked from SketchUp face colours + embedded textures (pitch, seats, cladding, metal, etc.). Original SKP had 42 materials — native CS2 importer uses one atlas.
 
 ---
 
@@ -49,6 +51,8 @@ art_project/
     └── LSV_Stadium/
         ├── NA_LSVStadium_Base.fbx
         ├── NA_LSVStadium_Base_BaseColorMap.png
+        ├── NA_LSVStadium_Base_NormalMap.png
+        ├── NA_LSVStadium_Base_MaskMap.png
         └── icon.png
 ```
 
@@ -119,8 +123,7 @@ You can re-open packaged assets from Workspace in later Editor sessions.
 | Tool | Use |
 |------|-----|
 | Blender 5.2 | `/Applications/Blender.app` — FBX export |
-| ImageMagick | Texture resize |
-| Python 3 + `openskp` / `scipy` | SketchUp parse (`pip install openskp scipy`) |
+| Python 3 + `openskp` / `scipy` / `pillow` / `trimesh` | SketchUp parse + atlas bake |
 
 CS2 itself is not required on the Mac. Final import/publish is **in-game on Windows**.
 
@@ -128,9 +131,11 @@ CS2 itself is not required on the Mac. Final import/publish is **in-game on Wind
 
 ## Manual polish (optional)
 
-1. **Materials** — FBX uses a single `Base` material; SketchUp had 42. Re-export with CS2 slots (`Base`, `Gls`, `Win`, …) via [CS2 Exporter for Blender](https://github.com/DanOkami/CS2-Exporter-for-Blender), or bake atlas + `_NormalMap.png` / `_MaskMap.png`.
+1. **Materials** — Atlas already covers SketchUp colours/textures on one `Base` slot. For glass/emissive CS2 slots (`Gls`, `Win`, …) split meshes in Blender via [CS2 Exporter for Blender](https://github.com/DanOkami/CS2-Exporter-for-Blender).
 2. **Asset type** — prop vs park building vs signature stadium; tune lot, park area, entertainment in the Editor.
 3. **LODs** — optional `_LOD1` / `_LOD2` FBX meshes for city-scale performance.
+
+**Visual limits vs SketchUp / 3D Warehouse:** OpenSKP does not export original SketchUp UVs. Pitch markings are planar-fitted; other textured faces use planar/box-style projection. Unpainted Layer0 faces (SketchUp UI red) are remapped to pitch green or neutral grey. Expect a close colour/read of the warehouse model, not a pixel-perfect material match.
 
 ---
 
@@ -142,7 +147,7 @@ CS2 itself is not required on the Mac. Final import/publish is **in-game on Wind
 "./scripts/convert_skp_to_fbx.sh" "/path/to/LSV stadium.skp"
 ```
 
-Requires: `pip install openskp scipy`, Blender at `/Applications/Blender.app`, and ImageMagick (`magick`).
+Requires: `pip install openskp scipy pillow trimesh numpy`, Blender at `/Applications/Blender.app`.
 
 Default SKP path in the script: `~/Downloads/LSV stadium.skp`.
 
@@ -150,10 +155,12 @@ Default SKP path in the script: `~/Downloads/LSV stadium.skp`.
 
 | Path | Description |
 |------|-------------|
-| `source/LSV_stadium.glb` | Intermediate GLB from SketchUp |
-| `source/LSV_stadium.blend` | Blender scene (scaled, joined) |
+| `source/LSV_stadium.glb` | Intermediate GLB from SketchUp (face colours) |
+| `source/LSV_stadium_textured.glb` | Atlas-UV textured GLB for Blender |
+| `source/LSV_stadium.blend` | Blender scene (metres, before CS2 bake) |
 | `source/LSV_stadium_metadata.json` | Parsed SKP metadata |
-| `scripts/convert_skp_to_fbx.sh` | Conversion driver (SKP → GLB → FBX) |
+| `scripts/convert_skp_to_fbx.sh` | Conversion driver (SKP → atlas → FBX) |
+| `scripts/bake_sketchup_atlas.py` | Face-colour + texture atlas bake |
 | `scripts/blender_export_fbx.py` | Blender mm→m + CS2 −90°/×100 FBX bake |
 
 Original SketchUp file is **not** in the repo (user Downloads). Parsed with [OpenSKP](https://github.com/iamahsanmehmood/openskp).
