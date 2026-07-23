@@ -443,12 +443,27 @@ def build_textured_mesh(scene: trimesh.Scene, parsed) -> tuple[trimesh.Trimesh, 
 
 
 def write_cs2_maps(atlas: Image.Image, out_dir: Path):
+    """Write native CS2 texture names (+ legacy *Map aliases).
+
+    Native Asset Importer expects `_BaseColor` / `_Normal` / `_MaskMap`.
+    Extra Assets Importer uses `_BaseColorMap` / `_NormalMap` — keep both.
+
+    Force fully opaque alpha: CS2 treats BaseColor A as opacity, and some
+    SketchUp textures (fences etc.) punch unintended holes in the stadium.
+    """
     out_dir.mkdir(parents=True, exist_ok=True)
-    base = out_dir / "NA_LSVStadium_Base_BaseColorMap.png"
-    atlas.convert("RGBA").save(base)
-    # Flat OpenGL normal
+    rgba = atlas.convert("RGBA")
+    r, g, b, _a = rgba.split()
+    opaque = Image.merge("RGBA", (r, g, b, Image.new("L", rgba.size, 255)))
+
+    base = out_dir / "NA_LSVStadium_Base_BaseColor.png"
+    opaque.save(base)
+    opaque.save(out_dir / "NA_LSVStadium_Base_BaseColorMap.png")  # legacy/EAI
+
     normal = Image.new("RGBA", (ATLAS_SIZE, ATLAS_SIZE), (128, 128, 255, 255))
+    normal.save(out_dir / "NA_LSVStadium_Base_Normal.png")
     normal.save(out_dir / "NA_LSVStadium_Base_NormalMap.png")
+
     # MaskMap: R metallic=0, G coat=0, B=0, A glossiness≈80 (matte stadium)
     mask = Image.new("RGBA", (ATLAS_SIZE, ATLAS_SIZE), (0, 0, 0, 80))
     mask.save(out_dir / "NA_LSVStadium_Base_MaskMap.png")
